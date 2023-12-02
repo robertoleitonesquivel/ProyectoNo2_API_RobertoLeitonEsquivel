@@ -1,0 +1,221 @@
+﻿@model MODELS.Models.Aviones
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="col-lg-12 mb-3">
+    <button class="btn btn-success" id="btnSave">Guardar</button>
+</section>
+
+<section class="row">
+    <article class="col-lg-6">
+        <form id="frmRegistrarAviones">
+            <div class="card">
+                <div class="card-header">
+                    Registro de aviones
+                </div>
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Serie</label>
+                                @Html.EditorFor(m => m.Serie, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(m => m.Serie, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                @Html.EditorFor(m => m.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Dimensiones</label>
+                                @Html.EditorFor(m => m.Dimensiones, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(m => m.Dimensiones, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Distancia</label>
+                                @Html.EditorFor(m => m.Distancia, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(m => m.Dimensiones, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Marca</label>
+                                @Html.DropDownListFor(m => m.IdMarca, ViewBag.Marcas as SelectList, "Selecciona una opción", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.IdMarca, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Modelo</label>
+                                @Html.DropDownList("IdModelo", new SelectList(new List<string>(), "Value", "Text"), "Selecciona una opción", new { @id = "Modelos", @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.IdModelo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Fecha Registro</label>
+                                @Html.EditorFor(m => m.FechaRegistro, new { htmlAttributes = new { @class = "form-control", type = "datetime-local" } })
+                                @Html.ValidationMessageFor(m => m.FechaRegistro, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Nombre del técnico</label>
+                                @Html.EditorFor(m => m.NombreTecnico, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(m => m.NombreTecnico, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <input type="submit" class="btn btn-primary" />
+                    <button type="button" id="btnReset" class="btn btn-danger">Limpiar</button>
+                </div>
+            </div>
+        </form>
+    </article>
+
+    <article class="col-lg-6">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre misión</th>
+                        <th>Nombre del técnico</th>
+                        <th>Fecha registro</th>
+                    </tr>
+                </thead>
+                <tbody id="data">
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+
+<script>
+
+    var aviones = [];
+
+    document.querySelector('#frmRegistrarAviones').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+        aviones.push(data);
+        Listar();
+        Clear(0);
+    });
+
+    document.querySelector('#btnSave').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        Add();
+
+    });
+
+    document.querySelector('#IdMarca').addEventListener('change', (e) => {
+        e.preventDefault();
+
+        GetModelos(e.target.value);
+
+    });
+
+    document.querySelector('#btnReset').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        Clear();
+
+    });
+
+    function Listar() {
+        let data = ``;
+
+        aviones.forEach(element => {
+            data += `<tr>
+                          <td>${element.Nombre}</td>
+                          <td>${element.NombreTecnico}</td>
+                          <td>${element.FechaRegistro}</td>
+                     </tr>`;
+        });
+
+        document.querySelector('#data').innerHTML = data;
+    }
+
+    function GetModelos(_id) {
+        show();
+        fetch(`/Aviones/GetModelos?IdMarca=${_id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },         
+        }).then(response => response.json())
+            .then(response => { 
+                hide();
+                $('#Modelos').empty();
+                $.each(response.Data, function (index, value) {
+                    $('#Modelos').append($('<option>').text(value.Name).attr('value', value.Id));
+                });
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }
+
+    function Add() {
+        show();
+        fetch('/Aviones/Add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(aviones)
+        }).then(response => response.json())
+            .then(response => {
+                hide();
+                Clear(1);
+                Alert(response);
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }
+
+    function Clear(add) {
+        if (add === 1) {
+            aviones = [];
+        }     
+        Listar();
+        $('#Modelos').empty();
+        document.querySelector('#frmRegistrarAviones').reset();
+    }
+
+    function Alert(_data) {
+        Swal.fire({
+            position: 'center',
+            icon: _data.Ok ? 'success' : 'error',
+            title: _data.Message,
+            showConfirmButton: true
+        });
+    }
+
+    function show() {
+        document.querySelector('#loader').classList.remove('display');
+    }
+
+    function hide() {
+        document.querySelector('#loader').classList.add('display');
+    }
+</script>

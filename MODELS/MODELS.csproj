@@ -30,6 +30,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -42,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\GetAllAvionesDTO.cs" />
+    <Compile Include="DTO\GetAvionesDTO.cs" />
+    <Compile Include="DTO\RestirosDTO.cs" />
     <Compile Include="Models\Aterrisaje.cs" />
     <Compile Include="Models\AterrisajeAviones.cs" />
     <Compile Include="Models\Aviones.cs" />
@@ -49,6 +60,7 @@
     <Compile Include="Models\Contracts\ICommon.cs" />
     <Compile Include="Models\Contracts\IMarcas.cs" />
     <Compile Include="Models\Contracts\IModelo.cs" />
+    <Compile Include="Models\Contracts\IRetiros.cs" />
     <Compile Include="Models\Despegues.cs" />
     <Compile Include="Models\DespeguesAviones.cs" />
     <Compile Include="Models\Inventario.cs" />

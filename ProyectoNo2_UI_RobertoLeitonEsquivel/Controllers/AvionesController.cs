@@ -1,4 +1,5 @@
-﻿using MODELS.Models;
+﻿using MODELS.DTO;
+using MODELS.Models;
 using MODELS.Models.Contracts;
 using ProyectoNo2_UI_RobertoLeitonEsquivel.Models;
 using System;
@@ -15,14 +16,16 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Controllers
         private readonly IMarcas _marcas;
         private readonly IAviones _aviones;
         private readonly IModelo _modelos;
+        private readonly IRetiros _retiros;
 
         public AvionesController()
         {
             _marcas = new MarcasModel();
             _aviones = new AvionesModel();
             _modelos = new ModelosModel();
+            _retiros = new RetirosModel();
         }
-     
+
         public async Task<ActionResult> Index()
         {
             try
@@ -37,6 +40,18 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Controllers
                 return View(new Aviones());
             }
 
+        }
+
+        public ActionResult Retiro()
+        {
+            return View();
+        }
+
+        public async Task<ActionResult> Listar()
+        {
+            var avionesList = await _aviones.GetAllAsync();
+
+            return View(avionesList);
         }
 
         [HttpPost]
@@ -55,6 +70,22 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<JsonResult> AddRetiro(RestirosDTO retirosDTO)
+        {
+            try
+            {
+                await _retiros.AddAsync(retirosDTO);
+
+                return Json(new { Ok = true, Message = "Retiro realizado con éxito!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { Ok = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpGet]
         public async Task<JsonResult> GetModelos(int IdMarca)
         {
@@ -64,6 +95,23 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Controllers
                 var modelosList = await _modelos.GetByMarca(IdMarca);
 
                 return Json(new { Ok = true, Mesaage = "", Data = modelosList }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { Ok = false, Mesaage = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetBySerie(int Serie)
+        {
+            try
+            {
+
+                var avionesList = await _aviones.GetBySerie(Serie);
+
+                return Json(new { Ok = true, Mesaage = "", Data = avionesList }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

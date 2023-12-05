@@ -48,9 +48,12 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Models
 
             if (result.IsSuccessStatusCode)
             {
-               T datos = JsonConvert.DeserializeObject<T>(await result.Content.ReadAsStringAsync());
+                if (_httpMethod == HttpMethod.Get)
+                {
+                    T datos = JsonConvert.DeserializeObject<T>(await result.Content.ReadAsStringAsync());
 
-                return datos;
+                    return datos;
+                }
             }
 
             return default;

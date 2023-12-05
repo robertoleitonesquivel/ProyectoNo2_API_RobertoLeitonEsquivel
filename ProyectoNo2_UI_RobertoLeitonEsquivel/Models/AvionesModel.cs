@@ -1,4 +1,5 @@
-﻿using MODELS.Models;
+﻿using MODELS.DTO;
+using MODELS.Models;
 using MODELS.Models.Contracts;
 using System;
 using System.Collections.Generic;
@@ -22,5 +23,17 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Models
         {
             await _common.ExecuteHttpAsync<List<Aviones>>(HttpMethod.Post, "Aviones", _aviones);
         }
+
+        public async Task<List<ModelosAvionesDTO>> GetAllAsync()
+        {
+            return await _common.ExecuteHttpAsync<List<ModelosAvionesDTO>>(HttpMethod.Get, "Aviones");
+        }
+
+        public async Task<List<GetAvionesDTO>> GetBySerie(int _serie)
+        {
+            return await _common.ExecuteHttpAsync<List<GetAvionesDTO>>(HttpMethod.Get, $"Aviones?id={_serie}");
+        }
+
+
     }
 }

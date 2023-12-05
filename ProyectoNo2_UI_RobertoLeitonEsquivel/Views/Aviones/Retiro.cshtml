@@ -1,0 +1,187 @@
+﻿@model MODELS.Models.Retiros
+
+@{
+    ViewBag.Title = "Retiro";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="container text-center mb-5">Retiro de aviones</h2>
+<section class="row mb-3">
+    <div class="col-lg-10">
+        <input type="number" placeholder="Numero serie" class="form-control" id="txtNumeroSerie" />
+    </div>
+    <div class="col-lg-2">
+        <button class="btn btn-info" id="btnBuscar">Buscar</button>
+    </div>
+</section>
+<section>
+    <section class="card">
+        <div class="card-header">
+            <form id="frmRetiros">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="mb-2">
+                            <label>Nombre del técnico</label>
+                            @Html.EditorFor(m => m.NombreTecnico, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(m => m.NombreTecnico, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="mb-2">
+                            <label>Fecha de retiro</label>
+                            @Html.EditorFor(m => m.FechaRetiro, new { htmlAttributes = new { @class = "form-control", type = "datetime-local" } })
+                            @Html.ValidationMessageFor(m => m.FechaRetiro, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre Fantasia</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                    </tr>
+                </thead>
+                <tbody id="datos">
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary" id="btnSave">Guardar</button>
+            <button class="btn btn-danger" id="btnLimpiar">Limpiar</button>
+        </div>
+    </section>
+</section>
+
+<script>
+
+    var aviones = [];
+
+    document.querySelector('#btnLimpiar').addEventListener('click', (e) => {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Esta seguro que desea eliminar?',
+            text: "Se eliminaran todo los datos y deberás realizar el proceso nuevamente!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                aviones = [];
+                Listar();
+                document.querySelector('#frmRetiros').reset();
+                document.querySelector('#txtNumeroSerie').value = '';
+            }
+        })
+    });
+
+    document.querySelector('#btnSave').addEventListener('click', (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(document.querySelector('#frmRetiros')));
+
+
+        const datos = {
+            ...data,
+            Aviones: aviones.map(element => (element.Id)).join(';'),
+            Modelos: Agrupar()
+        }
+
+        Add(datos);
+    });
+
+    document.querySelector('#btnBuscar').addEventListener('click', (e) => {
+        e.preventDefault();
+
+        let serie = +document.querySelector('#txtNumeroSerie').value;
+        if (aviones.some(x => x.Id === serie)) return;
+
+        show();
+     
+        fetch(`/Aviones/GetBySerie?Serie=${serie}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        }).then(response => response.json())
+            .then(response => {
+                hide();
+                document.querySelector('#txtNumeroSerie').value = '';
+                aviones = [...aviones, ...response.Data];
+                Listar();
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    });
+
+    function Add(_data) {
+        show();
+        fetch(`/Aviones/AddRetiro`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(_data)
+        }).then(response => response.json())
+            .then(response => {
+                hide();
+                aviones = [];
+                document.querySelector('#frmRetiros').reset();
+                document.querySelector('#txtNumeroSerie').value = '';
+                Listar();
+                Alert(response.Data);
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    }
+
+    function Alert(_data) {
+        Swal.fire({
+            position: 'center',
+            icon: _data.Ok ? 'success' : 'error',
+            title: _data.Message,
+            showConfirmButton: true
+        });
+    }
+
+    function Agrupar() {
+        return aviones.reduce((resultado, elemento) => {
+
+            if (!resultado) resultado = [];
+
+            if (!resultado.some(x => x === elemento.IdModelo))
+                resultado.push(elemento.IdModelo);
+
+            return resultado;
+
+        }, []).join(';');
+    }
+
+    function Listar() {
+        let data = ``;
+
+        aviones.forEach(element => {
+            data += `<tr>
+                           <td>${element.Id}</td>
+                          <td>${element.NombreFantasia}</td>
+                          <td>${element.Marca}</td>
+                          <td>${element.Modelo}</td>
+                     </tr>`;
+        });
+
+        document.querySelector('#datos').innerHTML = data;
+    }
+
+    function show() {
+        document.querySelector('#loader').classList.remove('display');
+    }
+
+    function hide() {
+        document.querySelector('#loader').classList.add('display');
+    }
+</script>
+
+

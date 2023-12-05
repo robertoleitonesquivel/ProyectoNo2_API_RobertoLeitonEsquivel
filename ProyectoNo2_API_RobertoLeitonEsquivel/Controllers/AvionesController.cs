@@ -42,5 +42,43 @@ namespace ProyectoNo2_API_RobertoLeitonEsquivel.Controllers
                 });
             }
         }
+
+        public async Task<HttpResponseMessage> Get(int id)
+        {
+            try
+            {
+                var result = await _aviones.GetBySerie(id);
+
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception ex)
+            {
+
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new
+                {
+                    Ok = true,
+                    Message = ex.Message
+                });
+            }
+        }
+
+        public async Task<HttpResponseMessage> Get()
+        {
+            try
+            {
+                var result = await _aviones.GetAllAsync();
+
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception ex)
+            {
+
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, new
+                {
+                    Ok = true,
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }

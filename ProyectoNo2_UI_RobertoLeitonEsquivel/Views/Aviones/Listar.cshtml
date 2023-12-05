@@ -1,0 +1,67 @@
+﻿@model IEnumerable<MODELS.DTO.ModelosAvionesDTO>
+
+@{
+    ViewBag.Title = "Listar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="container text-center mb-3 mt-3">Listado de inventario</h2>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Modelo</th>
+                <th>Stock</th>
+                <th>Aviones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-bs-toggle="collapse" data-bs-target="#aviones@(item.Id)" aria-expanded="false" aria-controls="aviones@(item.Id)">
+                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Modelo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Stock)</td>
+                    <td>
+                        <button class="btn btn-outline-info cursor-pointer">Ver</button>
+                    </td>
+                </tr>
+                <tr id="aviones@(item.Id)" class="collapse">
+                    <td colspan="4">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Marca</th>
+                                    <th>Serie</th>
+                                    <th>Fantasia</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Tecnico</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var avi in item.Aviones)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => avi.Marca)</td>
+                                        <td>@Html.DisplayFor(modelItem => avi.Serie)</td>
+                                        <td>@Html.DisplayFor(modelItem => avi.Fantasia)</td>
+                                        <td>@Html.DisplayFor(modelItem => avi.FechaRegistro)</td>
+                                        <td>@Html.DisplayFor(modelItem => avi.NombreTecnico)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No hay registros.</p>
+}
+

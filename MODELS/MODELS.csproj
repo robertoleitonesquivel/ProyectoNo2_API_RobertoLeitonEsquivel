@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\DespeguesDTO.cs" />
     <Compile Include="DTO\GetAllAvionesDTO.cs" />
     <Compile Include="DTO\GetAvionesDTO.cs" />
     <Compile Include="DTO\RestirosDTO.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Models\Aviones.cs" />
     <Compile Include="Models\Contracts\IAviones.cs" />
     <Compile Include="Models\Contracts\ICommon.cs" />
+    <Compile Include="Models\Contracts\IDespegues.cs" />
     <Compile Include="Models\Contracts\IMarcas.cs" />
     <Compile Include="Models\Contracts\IModelo.cs" />
     <Compile Include="Models\Contracts\IRetiros.cs" />

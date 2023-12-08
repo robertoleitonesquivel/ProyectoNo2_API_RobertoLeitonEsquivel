@@ -50,13 +50,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\AterrizajeDTO.cs" />
     <Compile Include="DTO\DespeguesDTO.cs" />
     <Compile Include="DTO\GetAllAvionesDTO.cs" />
     <Compile Include="DTO\GetAvionesDTO.cs" />
+    <Compile Include="DTO\GetDespeguesDTO.cs" />
     <Compile Include="DTO\RestirosDTO.cs" />
     <Compile Include="Models\Aterrisaje.cs" />
     <Compile Include="Models\AterrisajeAviones.cs" />
     <Compile Include="Models\Aviones.cs" />
+    <Compile Include="Models\Contracts\IAterrizaje.cs" />
     <Compile Include="Models\Contracts\IAviones.cs" />
     <Compile Include="Models\Contracts\ICommon.cs" />
     <Compile Include="Models\Contracts\IDespegues.cs" />

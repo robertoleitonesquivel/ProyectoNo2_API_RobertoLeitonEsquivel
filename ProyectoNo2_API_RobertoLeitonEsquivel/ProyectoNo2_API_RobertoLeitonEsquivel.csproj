@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AterrisajesController.cs" />
     <Compile Include="Controllers\AvionesController.cs" />
     <Compile Include="Controllers\DespeguesController.cs" />
     <Compile Include="Controllers\MarcasController.cs" />
@@ -94,6 +95,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\AterrisajeRepository.cs" />
     <Compile Include="Repository\AvionesRepository.cs" />
     <Compile Include="Repository\DespeguesRepository.cs" />
     <Compile Include="Repository\MarcasRepository.cs" />

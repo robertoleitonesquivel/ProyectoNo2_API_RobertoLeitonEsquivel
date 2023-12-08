@@ -35,7 +35,7 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Models
 
                 content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             }
-           
+
 
             HttpRequestMessage request = new HttpRequestMessage
             {
@@ -54,6 +54,12 @@ namespace ProyectoNo2_UI_RobertoLeitonEsquivel.Models
 
                     return datos;
                 }
+            }
+            else
+            {
+                var res = await result.Content.ReadAsStringAsync();
+
+                throw new Exception($"Lo sentimos ha ocurrido un error, detalle: {res}");
             }
 
             return default;

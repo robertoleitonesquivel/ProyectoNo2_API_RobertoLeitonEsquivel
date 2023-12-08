@@ -66,7 +66,8 @@ namespace ProyectoNo2_API_RobertoLeitonEsquivel.Repository
                                         INNER JOIN Marcas M
 	                                        ON A.IdMarca = M.Id
                                         INNER JOIN Inventario I
-	                                        ON A.IdModelo = I.IdModelo";
+	                                        ON A.IdModelo = I.IdModelo
+                                            AND I.Stock > 0";
                     cmd.CommandType = CommandType.Text;
                     var result = await cmd.ExecuteReaderAsync();
                     while (result.Read())
